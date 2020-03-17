@@ -57,4 +57,32 @@ RSpec.describe Checkout do
 
     expect(co.total).to eq(66.78)
   end
+
+  it 'combines rules (discounts calculated from raw total)' do
+    promotional_rules = [
+      Proc.new do |cart|
+        number = cart.count(scarf)
+
+        if number > 1
+          cart.add_discount(number * 0.75)
+        end
+      end,
+      Proc.new do |cart|
+        total = cart.map { |item| item.price }.reduce(:+)
+
+        if total > 60
+          cart.add_discount(total * 0.10)
+        end
+      end
+    ]
+
+    co = Checkout.new(promotional_rules)
+
+    co.scan(scarf)
+    co.scan(scarf)
+    co.scan(cufflinks)
+    co.scan(dress)
+
+    expect(co.total).to eq(73.605)
+  end
 end

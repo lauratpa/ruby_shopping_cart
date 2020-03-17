@@ -36,16 +36,16 @@ class Cart
   include Enumerable
 
   def initialize
-    @cart = []
+    @items = []
     @discount = 0
   end
 
   def add(item)
-    @cart.push(item)
+    @items.push(item)
   end
 
   def each
-    @cart.each do |item|
+    @items.each do |item|
       yield item
     end
   end
